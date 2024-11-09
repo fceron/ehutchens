@@ -62,13 +62,13 @@
 
         . ehutchens schoolid sex, by(stype)
 
-    Sex segregation in schools, with a decomposition by school type and region (sorted by school type and region):
+    Sex segregation in schools, with a decomposition by school type and region:
 
         . egen stypeXregion = group(stype region)
 
         . ehutchens schoolid sex, by(stypeXregion)
 		
-    Sex segregation in schools, with a decomposition by school type across regions using supergroup option (sorted by region and school type):
+    Sex segregation in schools, with a decomposition by school type across regions using supergroup option:
 	
 	. ehutchens schoolid sex, by(stype) supergroup(region)
 
