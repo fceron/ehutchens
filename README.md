@@ -9,9 +9,7 @@ indexes, their weighted sum (within component) and the remaining segregation not
 
 Installation from GitHub:
 
-    . net from https://raw.githubusercontent.com/fceron/ehutchens/main/
-    . net install ehutchens, replace
-
+    . net install ehutchens, from("https://raw.githubusercontent.com/fceron/ehutchens/main/")
 
 ---
 
@@ -19,3 +17,5 @@ Main changes:
 
     XXNovember2024 (version 1.0.0)
     - released on GitHub
+    09November2024 (version 1.0.0)
+    - Last revisions and updates
