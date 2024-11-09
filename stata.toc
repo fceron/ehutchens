@@ -2,4 +2,5 @@ V1
 ehutchens: extension of hutchens package (help ehutchens if installed). Francisco Ceron. Estimates the Hutchens entropy-based segregation index, defined for the two-group case, and its full decomposition.
 Additions: supergroup (subsamples), bootstrap across subsamples, storing full decomposition for entire sample,  subsamples, and bootstrap results, saving stored results as new  datasets.
 ehutchens.ado      Main ado file for ehutchens command
+hu_int.ado         Secondary ado file for ehutchens command. Auxiliar program for the bootstrap option. Original hutchens program slightly modified.
 ehutchens.sthlp    Help file for ehutchens
