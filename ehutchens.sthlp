@@ -80,9 +80,13 @@
 	
 	. ehutchens schoolid sex, by(stype) supergroup(region) save(mydata.dta) clear
 
-    Sex segregation in schools, with a decomposition by school type across regions (supergroup option) and bootstrap of main results across regions:
+    Sex segregation in schools, with a decomposition by school type across regions (supergroup option) and bootstrap of main results with user-specified values, across regions:
 	
-	. ehutchens schoolid sex, by(stype) supergroup(region) bootstrap reps(500) seed(85774) cluster(schoolid)
+	. ehutchens schoolid sex, by(stype) supergroup(region) bootstrap reps(500) seed(85774) cluster(schooled)
+     
+    Sex segregation in schools, with a decomposition by school type across regions (supergroup option) and bootstrap of main results with default values, across regions:
+	
+	. ehutchens schoolid sex, by(stype) supergroup(region) bootstrap cluster(schoolid)
 	
 {title: Stored results}
 	
