@@ -21,7 +21,7 @@
 	{cmdab:ehutchens} allows the calculation of the S index and its decomposition across supergroups (e.g. countries), it stores results in matrices, which can be saved as a new dataset that replaces the current dataset in memory. 
 	The distribution of the main results across subsamples can also be calculated by resampling using the bootstrap option. These extensions are incremental so that they generate results from the original decomposition by 
 	subgroup. Similarly, the bootstrap option is an extension of the supergroup option. All options store results in matrices. The save option, in turn, generates new datasets from stored results for either the 
-	supergroup option (entire sample) or supergroup option (subsamples). Last, the clear option replaces the current data by the new saved dataset.
+	subgroup option (entire sample) or supergroup option (subsamples). Last, the clear option replaces the current data with the new saved dataset.
 	
 	{it:unitvar} is the categorical variable that maps social units and {it:segvar} is the categorical binary variable (0/1) defining the social group membership of individuals who are segregated across social units, where 
 	the value 1 is the social group of interest. The decomposition of {it:S} by population subgroup is defined by {it:groupvar}, the categorical variable that clusters the social units. The overall {it:S} and its decomposition 
@@ -31,7 +31,7 @@
         
         The advantage of {cmd:ehutchens} over {cmd:hutchens} lies in its options. The new options integrate the subsample analysis which allows the calculation of the full decomposition by subgroup, providing the correct subgroup 
         contribution, weights, demographics, local index values and additive decomposition, across subsamples defined in {it:supergroup} option. While using a grouped variable (e.g. schooltype x country) with 
-        the original {it:bygroup} yields the correct local index values by subgroup, ordered depending on how the grouped variable was constructed, the rest of the statistics correspond to values for the entire sample. 
+        the original {it:bygroup} option yields the correct local index values by subgroup, ordered depending on how the grouped variable was constructed, the rest of the statistics correspond to values for the entire sample. 
         The new options then update the command for working with available cros-national, mutiple wave data sources. 
         
 
