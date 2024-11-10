@@ -28,6 +28,13 @@
 	can be calculated across the {it:supergroup} categorical variable, which maps specific subsamples. Results are stored as matrices, and the option {it:save} creates the new dataset for the subgroup decomposition for 
 	the entire sample and across subsamples, which can replace the original dataset if {it:clear} option is specified. The option {it:bootstrap} calculates the estimates across supergroups by resampling the social units to approximate 
 	the distribution of the estimates to deal with sampling variation in survey data. All calculations are based on the subset of observations with valid values on unitvar and segvar.
+        
+        The advantage of {cmd:ehutchens} over {cmd:hutchens} lies in its options. The new options integrate the subsample analysis which allows the calculation of the full decomposition by subgroup, providing the correct subgroup 
+        contribution, weights, demographics, local index values and additive decomposition, across subsamples defined in {it:supergroup} option. While using a grouped variable (e.g. schooltype x country) with 
+        the original {it:bygroup} yields the correct local index values by subgroup, ordered depending on how the grouped variable was constructed, the rest of the statistics correspond to values for the entire sample. 
+        The new options then update the command for working with available cros-national, mutiple wave data sources. 
+        
+
 
 {title: Options}
 
@@ -54,19 +61,13 @@
 
 {title: Examples} 
 
-    Occupational sex segregation:
+    Sex segregation in schools:
 
-        . ehutchens isco88 sex
+        . ehutchens schoolid sex
 
     Sex segregation in schools, with a decomposition by school type (e.g. public/private):
 
         . ehutchens schoolid sex, by(stype)
-
-    Sex segregation in schools, with a decomposition by school type and region:
-
-        . egen stypeXregion = group(stype region)
-
-        . ehutchens schoolid sex, by(stypeXregion)
 		
     Sex segregation in schools, with a decomposition by school type across regions using supergroup option:
 	
