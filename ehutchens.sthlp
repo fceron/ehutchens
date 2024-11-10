@@ -41,8 +41,8 @@
         {cmdab:bygroup}({it:groupvar}) specifies the decomposition by population subgroups defined by {it:groupvar}. This option generates the local index values for each subgroup, their additive contribution, and the decomposition that 
 	expresses the total segregation as the sum of the within-segregation and between-segregation components.
 		
-	{cmdab:missing} option treats missing values as a different category in the subgroup ({it:groupvar}) variable. Cases with missing values form a separate subgroup when decompositions are done. It is then a suboption of the bygroup option as
-	in the original command. If the missing option is not specified, all calculations (including aggregate statistics) are based on the subset of observations with valid values on unitvar, segvar, and groupvar.
+	{cmdab:missing} option treats missing values as a different category in the subgroup ({it:groupvar}) variable. Cases with missing values form a separate subgroup when decompositions are done. If the missing option is not specified, 
+         all calculations (including aggregate statistics) are based on the subset of observations with valid values on unitvar, segvar, and groupvar.
 
         {cmdab:format}(%fmt) specifies the format to display the results. The default is format(%10.0g).
 		
