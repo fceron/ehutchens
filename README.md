@@ -1,5 +1,5 @@
 # ehutchens
-Stata module to compute hutchens segregation index and their decomposition, for subsamples (e.g. countries, regions), allowing the bootstrap of main results, and storing results as new datasest. 
+A Stata module that extends Hutchens' segregation index to compute its full decomposition across subsamples (e.g., countries, regions), allows the bootstrap of main results, and stores results as a new dataset. 
 
 `ehutchens`  computes hutchens segregation index and their decomposition: the subgroup contribution and local 
 indexes, their weighted sum (within component) and the remaining segregation not related to subgroups (between component) across supergroups (subsamples), with bootstrap option for main results, and storing results as new datasets.
