@@ -113,8 +113,7 @@ References
 	
 	Jargowsky, P. A., & Kim, J. (2009). The information theory of segregation: uniting segregation and inequality in a common framework. In Occupational and residential segregation (pp. 3-31). Emerald Group Publishing Limited.
 
-        Jenkins, S. P. 2006. hutchens: Stata module to calculate the Hutchens ‘square root’ segregation index with optional decompositions by subgroup. Statistical Software Components S456601, Department of Economics, Boston College. 
-	https://ideas.repec.org /c /boc /bocode / s456601.html.
+        Jenkins, S. P. 2006. hutchens: Stata module to calculate the Hutchens ‘square root’ segregation index with optional decompositions by subgroup. Statistical Software Components S456601, Department of Economics, Boston College. https://ideas.repec.org /c /boc /bocode / s456601.html.
 
         Jenkins, S. P., Micklewright, J., & Schnepf, S. V. (2008). Social segregation in secondary schools: how does England compare with other countries?. Oxford review of education, 34(1), 21-37.
 	
