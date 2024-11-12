@@ -10,7 +10,7 @@
 
 {title: Description}
 
-	{cmdab:ehutchens} is an extension of {help hutchens} command, which computes the `square root' segregation index proposed by Hutchens (2004) from individual-level data. 
+	{cmdab:ehutchens} is an extension of {help hutchens} command (Jenkins, 2006), which computes the `square root' segregation index proposed by Hutchens (2004) from individual-level data. 
 	The Hutchens' segregation index, {it:S}, is an entropy-based index of inequality in the distribution of individuals across social units, defined for the two-group case. The Hutchens segregation index satisfies several desirable 
 	properties for a good numerical measure of segregation, it is additively decomposable by population subgroup as the sum of within-group segregation (a weighted sum of local {it:S} index values across subgroups) plus 
 	between-group segregation. The {it:S} is a distributional measure around the marginal distribution of the social groups, defined as the extent of inequality between the social group proportions across social units
@@ -32,7 +32,7 @@
         The advantage of {cmd:ehutchens} over {cmd:hutchens} lies in its options. The new options integrate the subsample analysis which allows the calculation of the full decomposition by subgroup, providing the correct subgroup 
         contribution, weights, demographics, local index values and additive decomposition, across subsamples defined in {it:supergroup} option. While using a grouped variable (e.g. schooltype x country) with 
         the original {it:bygroup} option yields the correct local index values by subgroup, ordered depending on how the grouped variable was constructed, the rest of the statistics correspond to values for the entire sample. 
-        The new options then update the command for working with available cros-national, mutiple wave data sources. 
+        The new options then update the command applicability for working with available cross-national, multiple-wave data sources. 
         
 
 
@@ -112,7 +112,10 @@ References
 	Hutchens, R. (2004). One measure of segregation. International Economic Review 45(2): 555-578.
 	
 	Jargowsky, P. A., & Kim, J. (2009). The information theory of segregation: uniting segregation and inequality in a common framework. In Occupational and residential segregation (pp. 3-31). Emerald Group Publishing Limited.
-		
+
+        Jenkins, S. P. 2006. hutchens: Stata module to calculate the Hutchens ‘square root’ segregation index with optional decompositions by subgroup. Statistical Software Components S456601, Department of Economics, Boston College. 
+	https://ideas.repec.org /c /boc /bocode / s456601.html.
+
         Jenkins, S. P., Micklewright, J., & Schnepf, S. V. (2008). Social segregation in secondary schools: how does England compare with other countries?. Oxford review of education, 34(1), 21-37.
 	
 	Mora, R., Ruiz-Castillo, J., (2008). A defense of an entropy-based index of multigroup segregation. Working Paper 07-76, Economic Series 45. Universidad Carlos III de Madrid.
