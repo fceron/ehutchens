@@ -15,8 +15,8 @@
 	properties for a good numerical measure of segregation, it is additively decomposable by population subgroup as the sum of within-group segregation (a weighted sum of local {it:S} index values across subgroups) plus 
 	between-group segregation. The {it:S} is a distributional measure around the marginal distribution of the social groups, defined as the extent of inequality between the social group proportions across social units
 	and the proportion of social groups in the entire population ("units given groups" notion). The {it:S} index is normalized in the unit interval, with zero representing complete integration, and one representing 
-	complete segregation. Moreover, as an additive index, the {it:S} can written as a sum of the contribution of each non-overlapping subgroup to the total segregation, a unique feature across entropy-based indices, plus 
-	the unit additive decomposition for any partition into clusters. See Hutchens (2001, 2004), Jenkins et al. (2006), Mora & Ruiz-Castillo (2008, 2009), Alonso-Villar & Del Río (2010), Guinea-Martin & Mora (2022).
+	complete segregation. Moreover, its unit decomposability property allows the {it:S} to be computed as a sum of the contribution of each non-overlapping subgroup to the total segregation, a unique feature across entropy-based indices, 
+        plus its decomposition for any partition into clusters. See Hutchens (2001, 2004), Jenkins et al. (2006), Mora & Ruiz-Castillo (2008, 2009), Alonso-Villar & Del Río (2010), Guinea-Martin & Mora (2022).
 	
 	{cmdab:ehutchens} allows the calculation of the S index and its decomposition across supergroups (e.g. countries), it stores results in matrices, which can be saved as a new dataset that replaces the current dataset in memory. 
 	The distribution of the main results across subsamples can also be calculated by resampling using the bootstrap option. These extensions are incremental so that they generate results from the original decomposition by 
