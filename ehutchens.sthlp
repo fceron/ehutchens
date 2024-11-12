@@ -10,13 +10,13 @@
 
 {title: Description}
 
-	{cmdab:ehutchens} is an extension of {help hutchens} command (Jenkins, 2006), which computes the `square root' segregation index proposed by Hutchens (2004) from individual-level data. 
+	{cmdab:ehutchens} is an extension of {help hutchens} command (Jenkins, 2006), which computes the `square root' segregation index proposed by Hutchens (2001, 2004) from individual-level data. 
 	The Hutchens' segregation index, {it:S}, is an entropy-based index of inequality in the distribution of individuals across social units, defined for the two-group case. The Hutchens segregation index satisfies several desirable 
 	properties for a good numerical measure of segregation, it is additively decomposable by population subgroup as the sum of within-group segregation (a weighted sum of local {it:S} index values across subgroups) plus 
 	between-group segregation. The {it:S} is a distributional measure around the marginal distribution of the social groups, defined as the extent of inequality between the social group proportions across social units
-	and the proportion of social groups in the entire population ("group given units" notion). The {it:S} index is normalized in the unit interval, with zero representing complete integration, and one representing 
-	complete segregation. Moreover, as an additive index, the {it:S} can written as a sum of the contribution of each non-overlapping subgroup to the total segregation, a unique feature across entropy-based indices. 
-	See Hutchens (2001, 2004), Jenkins et al. (2006), Mora & Ruiz-Castillo (2008, 2009), Alonso-Villar & Del Río (2010).
+	and the proportion of social groups in the entire population ("units given groups" notion). The {it:S} index is normalized in the unit interval, with zero representing complete integration, and one representing 
+	complete segregation. Moreover, as an additive index, the {it:S} can written as a sum of the contribution of each non-overlapping subgroup to the total segregation, a unique feature across entropy-based indices, plus 
+	the unit additive decomposition for any partition into clusters. See Hutchens (2001, 2004), Jenkins et al. (2006), Mora & Ruiz-Castillo (2008, 2009), Alonso-Villar & Del Río (2010), Guinea-Martin & Mora (2022).
 	
 	{cmdab:ehutchens} allows the calculation of the S index and its decomposition across supergroups (e.g. countries), it stores results in matrices, which can be saved as a new dataset that replaces the current dataset in memory. 
 	The distribution of the main results across subsamples can also be calculated by resampling using the bootstrap option. These extensions are incremental so that they generate results from the original decomposition by 
@@ -106,6 +106,8 @@
 References
 
         Chakravarty, S. R., & Silber, J. (2007). A generalized index of employment segregation. Mathematical Social Sciences, 53(2), 185-195.
+
+        Guinea-Martin, D., and Mora, R. (2022). Computing decomposable multigroup indices of segregation. The Stata Journal, 22(3), 521-556.
 	
 	Hutchens, R. (2001). Numerical measures of segregation: desirable properties and their implications. Mathematical social sciences, 42(1), 13-29.
 	
@@ -113,7 +115,7 @@ References
 	
 	Jargowsky, P. A., & Kim, J. (2009). The information theory of segregation: uniting segregation and inequality in a common framework. In Occupational and residential segregation (pp. 3-31). Emerald Group Publishing Limited.
 
-        Jenkins, S. P. 2006. hutchens: Stata module to calculate the Hutchens ‘square root’ segregation index with optional decompositions by subgroup. Statistical Software Components S456601, Department of Economics, Boston College. https://ideas.repec.org /c /boc /bocode / s456601.html.
+        Jenkins, S. P. (2006). hutchens: Stata module to calculate the Hutchens ‘square root’ segregation index with optional decompositions by subgroup. Statistical Software Components S456601, Department of Economics, Boston College. https://ideas.repec.org /c /boc /bocode / s456601.html.
 
         Jenkins, S. P., Micklewright, J., & Schnepf, S. V. (2008). Social segregation in secondary schools: how does England compare with other countries?. Oxford review of education, 34(1), 21-37.
 	
