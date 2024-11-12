@@ -29,7 +29,7 @@
 	the entire sample and across subsamples, which can replace the original dataset if {it:clear} option is specified. The option {it:bootstrap} calculates the estimates across supergroups by resampling the social units to approximate 
 	the distribution of the estimates to deal with sampling variation in survey data. All calculations are based on the subset of observations with valid values on unitvar and segvar.
         
-        The advantage of {cmd:ehutchens} over {cmd:hutchens} lies in its options. The new options integrate the subsample analysis which allows the calculation of the full decomposition by subgroup, providing the correct subgroup 
+        The advantage of {cmd:ehutchens} lies in its options. The new options integrate the subsample analysis which allows the calculation of the full decomposition by subgroup, providing the correct subgroup 
         contribution, weights, demographics, local index values and additive decomposition, across subsamples defined in {it:supergroup} option. While using a grouped variable (e.g. schooltype x country) with 
         the original {it:bygroup} option yields the correct local index values by subgroup, ordered depending on how the grouped variable was constructed, the rest of the statistics correspond to values for the entire sample. 
         The new options then update the command applicability for working with available cross-national, multiple-wave data sources. 
