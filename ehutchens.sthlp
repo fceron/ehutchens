@@ -121,7 +121,7 @@ Author
 
 Acknowledgements
 
-	Much of the code for ehutchens is based on {help hutchens} written by prof. S.P.Jenkins (LSE). ehutchens was developed as part of the project `Private privileges and public consequences: Inequality of educational 
+	Much of the code for ehutchens is based on {help hutchens} written by prof. S.P.Jenkins (LSE). Ehutchens was developed as part of the project `Private privileges and public consequences: Inequality of educational 
 	opportunity and learning dynamics in Chile and Latin America'. This projects was conducted at the Amsterdam Institute for Social Science Research (AISSR), University of Amsterdam, and was supported by grant 72140619, awarded 
 	to F. Ceron by the Programme of Advance Human Capital, National Commission of Scientific and Technological Research of Chile (CONICYT PFCHA).
 
