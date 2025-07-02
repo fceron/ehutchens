@@ -15,7 +15,9 @@ Installation from GitHub:
 
 Main changes:
 
-    XXNovember2024 (version 1.0.0)
+    10June2025 (version 1.0.0)
+    - Additional checks and update of the help file
+    11November2024 (version 1.0.0)
     - released on GitHub
     09November2024 (version 1.0.0)
     - Last revisions and updates
