@@ -1,8 +1,11 @@
-
-	*! version 1.0.2, Francisco Ceron, 23Sept2024
+	*! version 1.0.0, Francisco Ceron, 23Sept2024
+	*! version 1.0.1, Francisco Ceron, 15Aug2025
+	
 	*! ehutchens: extended hutchens 'square root' segregation index (additively decomposable), with supergroup option, stored matrices, save new dataset and bootstrap options
 	*! This is an extension of -hutchens-, version 1.0.0,  Stephen Jenkins, 17aug2005.
 
+
+	
 	
 /// ehutchens program: extended hutchens 'square root' segregation index (additively decomposable), with supergroup, stored matrices, save new dataset and bootstrap options	
 			
@@ -14,10 +17,10 @@
 		
 		************************************************************************
 		
-			/// Option supergroup with dynamic results construction 
+		*** Option supergroup with dynamic results construction 
 			
 		  if "`supergroup'" != "" {
-				/// Create an empty matrix to accumulate results
+				
 				matrix Z = J(1, 12, .)  
 
 				levelsof `supergroup', local(supergroups)
@@ -26,14 +29,14 @@
 				foreach group of local supergroups {
 					di "Processing supergroup: `group'"
 					
-					preserve  // Save the full dataset before filtering
+					preserve  
 
 					qui keep	 if `supergroup' == `group' 
 
-					//variables
+					
 					tokenize `varlist'
 
-			///treatment of missing values on bygroup var
+			
 					if "`missing'" != "" {
 							if "`bygroup'" == "" {
 									di as err "cannot specify missing option without bygroup option"
@@ -47,43 +50,49 @@
 							markout `touse' `bygroup', strok
 					}
 
-			///stop if no valid obs
+			
 					qui count if `touse' 
 					if r(N) == 0 { 
 							di as error "no valid observations"
 							error 2000
 					}
 
-			///groupvar 0/1
+			
 					capt assert `2'==0 | `2'==1 if `touse'
 					if _rc {
 							di as err "groupvar not 0/1"
 							exit 198
 					}
 
-			///take care of weights
-				if "`exp'"=="" local exp "`touse'"
+			
+				 if "`exp'" == "" {
+					local exp "`touse'"
+					}
+				else {
+		
+				capture confirm variable `exp'
+					if _rc {
+        
+					local exp "`touse'"
+					}
+				}
 
-					**************************************
+			********************************************************************
 				
 					
-			/// Check for combination of options not allowed
 					if ("`save'" != "" & "`bootstrap'" != "") {
 					display as 9error "Save and Bootstrap options cannot be combined."
 					exit 198
 					}
 		
-			/// Initial setup: value change and defaults option handling
 					local reps = cond("`reps'" == "", 400, `reps')
 					local seed = cond("`seed'" == "", 12345, `seed')
 		
 		
-			********* Aggregate index ********************
+			********* Aggregate index ******************************************
 
-			///sort
 					sort `touse' `1'
 
-			//compute cell totals and unweighted number of categories
 					tempvar cell0 cell1 iid
 					qui by `touse' `1': gen byte `iid' = _n==_N & `touse'
 					qui by `touse' `1': gen `cell0' = sum(`exp'*(1-`2')) if `touse'
@@ -91,7 +100,6 @@
 					qui by `touse' `1': gen `cell1' = sum(`exp'*`2') if `touse'
 					qui by `touse' `1': replace `cell1' = `cell1'[_N] if `touse'
 
-			//compute column totals and n of cases
 					tempvar col0 col1 id Ncat Nobs
 					qui by `touse' : gen byte `id' = _n==_N & `touse'
 					qui by `touse' : gen `col0' = sum(`exp'*(1-`2')) if `touse'
@@ -107,17 +115,15 @@
 							qui by `touse' : gen `Nobs' = _N if `touse'
 					}
 
-			///compute summands
 					tempvar sum2 s3 S
 					qui gen `sum2' = sqrt( (`cell0'/`col0') * (`cell1'/`col1') )
 					qui gen `s3' = .
 
-			///compute S  etc.
 					qui by `touse' : gen `S' = sum(`sum2') if `iid'
 					qui by `touse' : replace `S' = 1 - `S'[_N] if `iid'
 					qui by `touse' : replace `s3' = 100*( `col1' / (`col0' + `col1') ) if `iid'
 
-			///display
+
 					lab var `Ncat' "# units"
 					lab var `Nobs' "# obs (raw)"
 					lab var `S' "S"
@@ -145,14 +151,13 @@
 					local SS =  r(mean)
 					
 					
-			******* Decomposition: (a) subgroup index values, by subgroup *********
+			******* Decomposition: (a) subgroup index values, by subgroup ******
 
 		if "`bygroup'" != "" {
 
-				//sort
+			
 						sort `touse' `bygroup' `1'
 
-			///compute cell totals and number of categories
 						tempvar gcell0 gcell1 giid
 						qui by `touse' `bygroup' `1': gen byte `giid' = _n==_N & `touse'
 						qui by `touse' `bygroup' `1': gen `gcell0' = sum(`exp'*(1-`2')) if `touse'
@@ -160,7 +165,6 @@
 						qui by `touse' `bygroup' `1': gen `gcell1' = sum(`exp'*`2') if `touse'
 						qui by `touse' `bygroup' `1': replace `gcell1' = `gcell1'[_N] if `touse'
 
-			///compute column totals and n of cases
 						tempvar gcol0 gcol1 gid gNcat gNobs gNpc
 						qui by `touse' `bygroup': gen byte `gid' = _n==_N & `touse'
 						qui by `touse' `bygroup': gen `gcol0' = sum(`exp'*(1-`2')) if `touse'
@@ -178,7 +182,6 @@
 						qui by `touse' `bygroup': gen `gNpc' = 100*(`gcol0' + `gcol1')/(`col0' + `col1') if `touse'
 
 
-			///compute summands
 						tempvar gsum2 gs3 gS gw scont
 						qui gen `gsum2' = sqrt( (`gcell0'/`gcol0') * (`gcell1'/`gcol1') )
 						qui gen `gs3' = .
@@ -186,22 +189,18 @@
 						qui gen `scont' = (`gcell1'/`col1') - sqrt( (`gcell0'/`col0')*(`gcell1'/`col1')  )
 
 
-			///compute S  etc.
-
 						qui by `touse' `bygroup' : gen `gS' = sum(`gsum2') if `giid'
 						qui by `touse' `bygroup' : replace `gS' = 1 - `gS'[_N] if `giid'
 						qui by `touse' `bygroup' : replace `gs3' = 100*( `gcol1' / (`gcol0' + `gcol1') ) if `giid'
 						qui by `touse' `bygroup' : replace `scont' = sum(`scont') if `giid'
 						qui by `touse' `bygroup' : replace `scont' = `scont'[_N]  if `giid'
 
-					
-			/// compute local segregation indexes, weights, contribution percentage of social unit of interest across groups, and save as matrices		
 			
 					 su `bygroup', meanonly
 						local min = r(min)
 						local max = r(max)
 
-			/// Define matrices: BG (subgroup id), SG (supergroup id), SS (Overall S), S (S by subgroup, or Local S), W (weight by subgroup), P (% of social group by subgroup), X (% demographic by subgroup), C (Contribution of each subgroup to S)
+
 						matrix BG = J( `max' - `min' + 1,1, .)
 						matrix SG = J( `max' - `min' + 1,1, .)
 						matrix SS = J( `max' - `min' + 1,1, .)
@@ -211,7 +210,6 @@
 						matrix X =  J( `max' - `min' + 1,1, .)
 						matrix C =  J( `max' - `min' + 1,1, .)
 						
-			/// Loop by group to and store results in matrices
 						forvalues i = `min'/`max' {
 						qui summ `bygroup' if `bygroup' == `i'
 						matrix BG[ `i' - `min' + 1,1] = r(mean)
@@ -233,7 +231,7 @@
 						
 						qui summ `scont' if `bygroup' == `i' & `giid'
 						matrix C[ `i' - `min' + 1,1] = r(max) 
-						// option giid retrieves the right values of group contribution
+
 						
 						qui summ `S' if `bygroup'==`i'   
 						matrix SS[ `i' - `min' + 1,1] = r(mean)
@@ -241,7 +239,7 @@
 						
 		}
 
-			///display
+
 			lab var `gNcat' "# units"
 			lab var `gNobs' "# obs (raw)"
 			lab var `gS' "S"
@@ -292,7 +290,6 @@
 							tabdisp `decomp' if `decomp' < 2, cell(`ds' `dspc') `format'
 							noi di " "
 
-			 /// compute a clone of the decomposition for the calculation of return scalars
 						
 							tempvar SW_ SB_ SWpc_ SBpc_	
 						
@@ -309,16 +306,13 @@
 				  su `bygroup', meanonly
 						local min = r(min)
 						local max = r(max)
-
-			 /// Define matrices: SW (within subgroup S), SB (between subgroup S) SWP (% within subgroup S), SBP (% between subgroup S) 
+ 
 						
 						matrix SW = J( `max' - `min' + 1,1, .)
 						matrix SB = J( `max' - `min' + 1,1, .)
 						matrix SWP = J( `max' - `min' + 1,1, .)
 						matrix SBP = J( `max' - `min' + 1,1, .)
-						
-			 
-			 /// compute same within and between components, and save as matrices
+
 			 
 			 forvalues i= `r(min)'/`r(max)' {    
 						
@@ -336,44 +330,37 @@
 						
 						}
 								
-			/// Build the Z matrix for each supergroup
 				matrix  Y = SG, BG, SS, S,  W, C, P, X,  SW, SB, SWP, SBP
 				matrix coln Y = SG BG S local_S weight contrib soc_g_% demo_%  SW SB SW_% SB_%
 				
 							
 				}
 					
-					// Incremental building the pooled matrix 
 					matrix Y_`group' = Y
 					
 					matrix Z = Z \ Y_`group'
 					
-					/*return matrix M_`group' = Y_`group'  */
 					matrix drop Y_`group' 
 					
 					restore  
-			 /// Restore the original dataset for the next supergroup
 			
 				}
 				
-				// Drop matrix of scalars and Y as it is the same as the last supergroup matrix
+				
 				matrix drop Y SS SG BG S W P X C SW SB SWP SBP
 				matrix coln Z =SG BG S local_S weight contrib soc_g_% demo_%  SW SB SW_% SB_%
 				
-			/// Delete the first empty row
 				matrix Z = Z[2..., .]
 				
 			********************************************************************	
-			/// Option save matrix as dataset 
+		
 			if "`save'" != "" {
 			
 			
-			/// Preserve the dataset in memory if 'clear' is not specified
 				if "`clear'" != "clear" {
 				preserve
 				}
 				
-			/// Z  matrix is transformed into dataset
 				
 				svmat Z
 				
@@ -388,24 +375,22 @@
 			   
 			   order SG BG S local_S weight contrib soc_group_pct demo_pct  SW SB SW_pct SB_pct
 			   
-			   /*sort SG BG*/
 			   
 			   save "`save'", replace
 				
-				/// Load the saved dataset into memory
 				if "`clear'" == "clear" {
 				use "`save'", clear
 				} 
 				else {
-				/// restore the original dataset in memory
+				
 				restore
 				}
 			}
-			 /// Store pooled matrix
+			 
 			return matrix M = Z
 			
 			********************************************************************		
-			/// Option boostrap main statistics (S, SW, SB) 
+			
 			
 			 if "`bootstrap'" != "" {
 			 
@@ -413,7 +398,7 @@
         
 				
 				count
-				matrix Z = J(1, 10, .) //  Empty matrix to stack subsample matrices
+				matrix Z = J(1, 10, .) 
 				
 				levelsof `supergroup', local(supergroups)
         
@@ -425,37 +410,44 @@
 				qui keep if `supergroup' == `group'
 				count
 				****************************************************************
-				/// To pass options to `hu_int` auxiliar program within bootstrap 
-					local weight_option = ""
-					if "`exp'" != "" {
-					local weight_option "[`weight'=`exp']"
-					} 
 				
-					local bygroup_option ""
-					if "`bygroup'" != "" {
-					local bygroup_option "bygroup(`bygroup')"
-					}
+				local weight_option ""
+				if "`exp'" != "" & "`weight'" != "" {
+				local weight_option "[`weight'=`exp']"
+				}
+
+				
+				local bygroup_option ""
+				if "`bygroup'" != "" {
+				local bygroup_option "bygroup(`bygroup')"
+				}
+
+				
+				local missing_option ""
+				if "`missing'" != "" {
+				local missing_option "missing"
+				}
 				
 				*****************************************************************
-				///  Build supergroup id matrix
+				
 						qui summ `supergroup' 
 						matrix SG`group' = r(mean)
 	
 				****************************************************************
-				/// Call bootstrap to run `hu_int` auxiliar program, with dynamic results construction
-				bootstrap r(S) r(SW) r(SB)  , reps(`reps') seed(`seed') cluster(`cluster') force: hu_int `varlist' `weight_option' `missing_option', `bygroup_option'
 				
-				/// Save bootstrap results
+				bootstrap r(S) r(SW) r(SB)  , reps(`reps') seed(`seed') cluster(`cluster') nowarn force: hu_int `varlist' `weight_option' `missing_option', `bygroup_option'
+				
+				
 				estat bootstrap, all
 				matrix A`group' = e(b)
 				matrix B`group' = e(ci_bc)
 				matrix Y`group' = J(1, 9, .)
 				matrix Y`group' = SG`group', A`group'[1,1], B`group'[1,1], B`group'[2,1], A`group'[1,2], B`group'[1,2], B`group'[2,2], A`group'[1,3], B`group'[1,3], B`group'[2,3]
 				
-				/// Incremental build of final matrix
+				
 				matrix Z = Z \ Y`group'
 				
-				/// Restore the full dataset to select the following supergroup
+				
 				
 				restore  
 				
@@ -463,11 +455,11 @@
 				
 				
 				}
-				/// Delete the first empty row
+				
 				matrix Z = Z[2..., .]
-				///Coln names
+				
 				matrix coln Z =SG S S_ll S_ul SW SW_ll SW_ul SB SB_ll SB_ul
-				/// Save final matrix with indices for each supergroup and decomposition, with CI
+				
 				return matrix M_B = Z
 				
 				}
@@ -482,12 +474,11 @@
 			************************************************************************
 			
 			
-			/// Calculations without supergroup option
 			else {
-						//variables
+						
 					tokenize `varlist'
 
-			///treatment of missing values on bygroup var
+			
 					if "`missing'" != "" {
 							if "`bygroup'" == "" {
 									di as err "cannot specify missing option without bygroup option"
@@ -501,30 +492,40 @@
 							markout `touse' `bygroup', strok
 					}
 
-			///stop if no valid obs
+			
 					qui count if `touse' 
 					if r(N) == 0 { 
 							di as error "no valid observations"
 							error 2000
 					}
 
-			///groupvar 0/1
+			
 					capt assert `2'==0 | `2'==1 if `touse'
 					if _rc {
 							di as err "groupvar not 0/1"
 							exit 198
 					}
 
-			///take care of weights
-					if "`exp'"=="" local exp "`touse'"
+			
+					 if "`exp'" == "" {
+					local exp "`touse'"
+					}
+				else {
+		
+				capture confirm variable `exp'
+					if _rc {
+        
+					local exp "`touse'"
+					}
+				}
 
 
-			********* Aggregate index ********************
+			******************** Aggregate index *******************************
 
-			///sort
+			
 					sort `touse' `1'
 
-			///compute cell totals and unweighted number of categories
+			
 					tempvar cell0 cell1 iid
 					qui by `touse' `1': gen byte `iid' = _n==_N & `touse'
 					qui by `touse' `1': gen `cell0' = sum(`exp'*(1-`2')) if `touse'
@@ -532,7 +533,7 @@
 					qui by `touse' `1': gen `cell1' = sum(`exp'*`2') if `touse'
 					qui by `touse' `1': replace `cell1' = `cell1'[_N] if `touse'
 
-			///compute column totals and n of cases
+			
 					tempvar col0 col1 id Ncat Nobs
 					qui by `touse' : gen byte `id' = _n==_N & `touse'
 					qui by `touse' : gen `col0' = sum(`exp'*(1-`2')) if `touse'
@@ -548,17 +549,15 @@
 							qui by `touse' : gen `Nobs' = _N if `touse'
 					}
 
-			///compute summands
+
 					tempvar sum2 s3 S
 					qui gen `sum2' = sqrt( (`cell0'/`col0') * (`cell1'/`col1') )
 					qui gen `s3' = .
 
-			///compute S  etc.
 					qui by `touse' : gen `S' = sum(`sum2') if `iid'
 					qui by `touse' : replace `S' = 1 - `S'[_N] if `iid'
 					qui by `touse' : replace `s3' = 100*( `col1' / (`col0' + `col1') ) if `iid'
 
-			///display
 					lab var `Ncat' "# units"
 					lab var `Nobs' "# obs (raw)"
 					lab var `S' "S"
@@ -580,7 +579,7 @@
 					noi di " "
 					noi di as txt "Aggregate statistics"
 					
-					tabdisp `touse2' if `id', cell(`S' `s3' `Ncat' `Nobs') `format'  // only 5 vars allowed in cell()
+					tabdisp `touse2' if `id', cell(`S' `s3' `Ncat' `Nobs') `format'  
 
 					qui su `S', meanonly    
 					local SS =  r(mean)
@@ -590,10 +589,8 @@
 
 		if "`bygroup'" != "" {
 
-				///sort
 						sort `touse' `bygroup' `1'
 
-				///compute cell totals and number of categories
 						tempvar gcell0 gcell1 giid
 						qui by `touse' `bygroup' `1': gen byte `giid' = _n==_N & `touse'
 						qui by `touse' `bygroup' `1': gen `gcell0' = sum(`exp'*(1-`2')) if `touse'
@@ -601,7 +598,6 @@
 						qui by `touse' `bygroup' `1': gen `gcell1' = sum(`exp'*`2') if `touse'
 						qui by `touse' `bygroup' `1': replace `gcell1' = `gcell1'[_N] if `touse'
 
-				///compute column totals and n of cases
 						tempvar gcol0 gcol1 gid gNcat gNobs gNpc
 						qui by `touse' `bygroup': gen byte `gid' = _n==_N & `touse'
 						qui by `touse' `bygroup': gen `gcol0' = sum(`exp'*(1-`2')) if `touse'
@@ -619,7 +615,6 @@
 						qui by `touse' `bygroup': gen `gNpc' = 100*(`gcol0' + `gcol1')/(`col0' + `col1') if `touse'
 
 
-				///compute summands
 						tempvar gsum2 gs3 gS gw scont
 						qui gen `gsum2' = sqrt( (`gcell0'/`gcol0') * (`gcell1'/`gcol1') )
 						qui gen `gs3' = .
@@ -627,22 +622,17 @@
 						qui gen `scont' = (`gcell1'/`col1') - sqrt( (`gcell0'/`col0')*(`gcell1'/`col1')  )
 
 
-				///compute S  etc.
-
 						qui by `touse' `bygroup' : gen `gS' = sum(`gsum2') if `giid'
 						qui by `touse' `bygroup' : replace `gS' = 1 - `gS'[_N] if `giid'
 						qui by `touse' `bygroup' : replace `gs3' = 100*( `gcol1' / (`gcol0' + `gcol1') ) if `giid'
 						qui by `touse' `bygroup' : replace `scont' = sum(`scont') if `giid'
 						qui by `touse' `bygroup' : replace `scont' = `scont'[_N]  if `giid'
-
-				
-				/// compute local segregation indexes, weights, contribution percentage of social unit of interest across groups, and save as matrices		
+	
 				
 					 su `bygroup', meanonly
 						local min = r(min)
 						local max = r(max)
 
-				/// Define matrices: BG (subgroup id), SS (Overall S), S (S by subgroup, or Local S), W (weight by subgroup), P (% of social group by subgroup), X (% demographic by subgroup), C (Contribution of each subgroup to S)
 						matrix BG = J( `max' - `min' + 1,1, .)
 						matrix SS = J( `max' - `min' + 1,1, .)
 						matrix S =  J( `max' - `min' + 1,1, .)
@@ -651,7 +641,7 @@
 						matrix X =  J( `max' - `min' + 1,1, .)
 						matrix C =  J( `max' - `min' + 1,1, .)
 						
-				/// Loop by group to and store results in matrices
+
 						forvalues i = `min'/`max' {
 						
 						qui summ `bygroup' if `bygroup' == `i'
@@ -671,14 +661,14 @@
 						
 						qui summ `scont' if `bygroup' == `i' & `giid'  
 						matrix C[ `i' - `min' + 1,1] = r(max)
-						// option giid retrieves the right values of group contribution
+					
 						
 						qui summ `S' if `bygroup'==`i'   
 						matrix SS[ `i' - `min' + 1,1] = r(mean)		
 						
 		}		
 
-			///display
+			
 			lab var `gNcat' "# units"
 			lab var `gNobs' "# obs (raw)"
 			lab var `gS' "S"
@@ -694,7 +684,7 @@
 			tabdisp `bygroup' if `gid', cell(`gS' `gw' `scont') `format'
 
 	
-			******* Decomposition: (b) within- and betweeen-group breakdown  *********
+			******* Decomposition: (b) within- and betweeen-group breakdown*****
 
 							tempvar SW SB 
 							qui ge `SW' = sum( `gw' * `gS') if `gid'
@@ -729,8 +719,6 @@
 							tabdisp `decomp' if `decomp' < 2, cell(`ds' `dspc') `format'
 							noi di " "
 
-
-			/// compute a clone of the decomposition for the calculation of return scalars
 						
 							tempvar SW_ SB_ SWpc_ SBpc_	
 						
@@ -747,16 +735,12 @@
 				  su `bygroup', meanonly
 						local min = r(min)
 						local max = r(max)
-
-			/// Define matrices: SW (within subgroup S), SB (between subgroup S) SWP (% within subgroup S), SBP (% between subgroup S) 
 						
 						matrix SW = J( `max' - `min' + 1,1, .)
 						matrix SB = J( `max' - `min' + 1,1, .)
 						matrix SWP = J( `max' - `min' + 1,1, .)
 						matrix SBP = J( `max' - `min' + 1,1, .)
 						
-			 
-			/// compute same within and between components and save as matrices	
 			 
 			 forvalues i= `r(min)'/`r(max)' {    		
 		   
@@ -774,29 +758,27 @@
 						
 						}
 						
-			/// Build the matrix
 				matrix  Z = BG, SS, S,  W, C, P, X,  SW, SB, SWP, SBP
 				matrix coln Z = BG S local_S  weight contrib soc_g_% demo_% SW SB SW_% SB_%
 			
-			************************************************************************	
+			********************************************************************	
 				
-			/// Save results if the Save option is specified
+			
 			if "`save'" != "" {
 			
 			
-			/// Preserve the dataset in memory if 'clear' is not specified
+			
 				if "`clear'" != "clear" {
 				preserve
 				}
 				
-			/// Z_pooled matrix is transformed into dataset
+			
 				
 				svmat Z
 				
 				local colnames " BG  S local_S weight contrib soc_group_pct demo_pct  SW SB SW_pct SB_pct"
 
 				
-			/// Loop to add col names to dataset
 			
 				forvalues i = 1/11 {
 				local name : word `i' of `colnames'
@@ -811,17 +793,17 @@
 			   
 				save "`save'", replace
 				
-				/// Load the saved dataset into memory
+
 				if "`clear'" == "clear" {
 				use "`save'", clear
 				} 
 				else {
-				/// restore the original dataset in memory
+			
 				restore
 				}
 			 }
 		
-			/// Store matrix
+			
 			return matrix M = Z
 		
 
