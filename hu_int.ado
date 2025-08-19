@@ -1,20 +1,24 @@
 
 
-	*! version 1.0.2, Francisco Ceron, 23Sept2024
+	*! version 1.0.0, Francisco Ceron, 23Sept2024
+	*! version 1.0.1, Francisco Ceron, 15Aug2025
+	
 	*! ehutchens: extended hutchens 'square root' segregation index (additively decomposable), with supergroup option, stored matrices, save new dataset and bootstrap options
-	*! This is an auxilar program, a slightly modified hutchens comman for the bootstrap option in ethutchens program version 1.0.2.
+	*! This is an extension of -hutchens-, version 1.0.0,  Stephen Jenkins, 17aug2005.
 
 	
-
-		/// Auxiliar program (slighlty modified original hutchens program command) to be executed within ehutchens program command (line 230)
+	
+	
+		/// Auxiliar program (slighlty modified original hutchens program command) to be executed within ehutchens program command
 			program define hu_int, rclass
 					version 15.1
 					syntax varlist(min=2 max=2) [fw aw/] [if] [in] [, Missing Format(passthru) BYgroup(varname) ]
 
-		///variables
+			
+		
 			tokenize `varlist'
 
-		///treatment of missing values on bygroup var
+		
 			if "`missing'" != "" {
                 if "`bygroup'" == "" {
                         di as err "cannot specify missing option without bygroup option"
@@ -28,29 +32,37 @@
                 markout `touse' `bygroup', strok
         }
 
-		///stop if no valid obs
+		
 			qui count if `touse' 
 			if r(N) == 0 { 
                 di as error "no valid observations"
                 error 2000
         }
 
-		///groupvar 0/1
+		
         capt assert `2'==0 | `2'==1 if `touse'
         if _rc {
                 di as err "groupvar not 0/1"
                 exit 198
         }
 
-		///take care of weights
-        if "`exp'"=="" local exp "`touse'"
+		
+        if "`exp'" == "" {
+		local exp "`touse'"
+		}
+		else {
+		
+		capture confirm variable `exp'
+		if _rc {
+        
+        local exp "`touse'"
+			}
+		}
 
 		********* Aggregate index **********************************************
-
-		///sort
+		
         sort `touse' `1'
 
-		///compute cell totals and unweighted number of categories
         tempvar cell0 cell1 iid
         qui by `touse' `1': gen byte `iid' = _n==_N & `touse'
         qui by `touse' `1': gen `cell0' = sum(`exp'*(1-`2')) if `touse'
@@ -58,7 +70,6 @@
         qui by `touse' `1': gen `cell1' = sum(`exp'*`2') if `touse'
         qui by `touse' `1': replace `cell1' = `cell1'[_N] if `touse'
 
-		///compute column totals and n of cases
         tempvar col0 col1 id Ncat Nobs
         qui by `touse' : gen byte `id' = _n==_N & `touse'
         qui by `touse' : gen `col0' = sum(`exp'*(1-`2')) if `touse'
@@ -74,17 +85,14 @@
                 qui by `touse' : gen `Nobs' = _N if `touse'
         }
 
-		///compute summands
         tempvar sum2 s3 S
         qui gen `sum2' = sqrt( (`cell0'/`col0') * (`cell1'/`col1') )
         qui gen `s3' = .
 
-		///compute S  etc.
         qui by `touse' : gen `S' = sum(`sum2') if `iid'
         qui by `touse' : replace `S' = 1 - `S'[_N] if `iid'
         qui by `touse' : replace `s3' = 100*( `col1' / (`col0' + `col1') ) if `iid'
 
-		///display
         lab var `Ncat' "# units"
         lab var `Nobs' "# obs (raw)"
         lab var `S' "S"
@@ -114,13 +122,10 @@
 
 		******* Decomposition: (a) subgroup index values, by subgroup *********
 
-
 		if "`bygroup'" != "" {
 
-        ///sort
                 sort `touse' `bygroup' `1'
 
-        ///compute cell totals and number of categories
                 tempvar gcell0 gcell1 giid
                 qui by `touse' `bygroup' `1': gen byte `giid' = _n==_N & `touse'
                 qui by `touse' `bygroup' `1': gen `gcell0' = sum(`exp'*(1-`2')) if `touse'
@@ -128,7 +133,6 @@
                 qui by `touse' `bygroup' `1': gen `gcell1' = sum(`exp'*`2') if `touse'
                 qui by `touse' `bygroup' `1': replace `gcell1' = `gcell1'[_N] if `touse'
 
-        ///compute column totals and n of cases
                 tempvar gcol0 gcol1 gid gNcat gNobs gNpc
                 qui by `touse' `bygroup': gen byte `gid' = _n==_N & `touse'
                 qui by `touse' `bygroup': gen `gcol0' = sum(`exp'*(1-`2')) if `touse'
@@ -145,25 +149,17 @@
                 }
                 qui by `touse' `bygroup': gen `gNpc' = 100*(`gcol0' + `gcol1')/(`col0' + `col1') if `touse'
 
-
-        ///compute summands
                 tempvar gsum2 gs3 gS gw scont
                 qui gen `gsum2' = sqrt( (`gcell0'/`gcol0') * (`gcell1'/`gcol1') )
                 qui gen `gs3' = .
                 qui gen `gw' = sqrt( (`gcol0'/`col0') * (`gcol1'/`col1') )
                 qui gen `scont' = (`gcell1'/`col1') - sqrt( (`gcell0'/`col0')*(`gcell1'/`col1')  )
 
-
-        ///compute S  etc.
-
                 qui by `touse' `bygroup' : gen `gS' = sum(`gsum2') if `giid'
                 qui by `touse' `bygroup' : replace `gS' = 1 - `gS'[_N] if `giid'
                 qui by `touse' `bygroup' : replace `gs3' = 100*( `gcol1' / (`gcol0' + `gcol1') ) if `giid'
                 qui by `touse' `bygroup' : replace `scont' = sum(`scont') if `giid'
                 qui by `touse' `bygroup' : replace `scont' = `scont'[_N]  if `giid'
-
-
-        ///display
 
                 lab var `gNcat' "# units"
                 lab var `gNobs' "# obs (raw)"
@@ -175,7 +171,7 @@
 
                 noi di " "
                 noi di as txt "Statistics for each subgroup defined by " as res "`bygroup'"
-                        // 2 tables for display: -tabdisp- only allows 5 vbles per table
+                        
                 tabdisp `bygroup' if `gid', cell(`gs3' `gNcat' `gNobs' `gNpc') `format'
                 tabdisp `bygroup' if `gid', cell(`gS' `gw' `scont') `format'
 
@@ -221,3 +217,6 @@
 }
 
 end
+
+	
+	
